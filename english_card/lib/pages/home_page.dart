@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:english_card/pages/all_word_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +14,7 @@ import 'package:english_card/values/share_keys.dart';
 import 'package:english_card/widgets/app_button.dart';
 import 'package:english_words/english_words.dart';
 import 'package:english_card/models/english_todays.dart';
+import 'package:translator/translator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,12 +24,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GoogleTranslator translator = GoogleTranslator();
   int _currIndex = 0;
 
   late PageController _pageController;
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   List<EnglishToday> words = [];
+  List<String> words_vi = [];
   String quoteHeader = Quotes().getRandom().getContent()!;
 
   List<int> fixedListRandom({int len = 1, int max = 120, int min = 1}) {
@@ -49,6 +53,15 @@ class _HomePageState extends State<HomePage> {
     return newList;
   }
 
+  void toVietNamese(String word) {
+    // translator.translate(word, from: 'en', to: 'vn').then((result) {
+    //   setState(() {
+    //     words_vi.add(result.toString());
+    //     print(result);
+    //   });
+    // });
+  }
+
   void getEnglishToday() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -57,17 +70,24 @@ class _HomePageState extends State<HomePage> {
     List<int> rans = fixedListRandom(len: len, max: nouns.length);
     rans.forEach((index) {
       newList.add(nouns[index]);
+      toVietNamese(nouns[index]);
     });
-
+    final List uniqueList = Set.from(newList).toList();
     setState(() {
-      words = newList.map((e) => getQuote(e)).toList();
+      words = newList.map((e) => getQuote(uniqueList.indexOf(e), e)).toList();
     });
   }
 
-  EnglishToday getQuote(String noun) {
+  EnglishToday getQuote(int index, String noun) {
     Quote? quote;
     quote = Quotes().getByWord(noun);
     if (quote == null) quote = Quotes().getRandom();
+    translator.translate(noun, from: 'en', to: 'vi').then((result) {
+      setState(() {
+        words[index].noun_vi = result.toString();
+      });
+    });
+
     return EnglishToday(
       noun: noun,
       quote: quote?.content,
@@ -160,11 +180,14 @@ class _HomePageState extends State<HomePage> {
               });
             },
             itemBuilder: (context, index) {
-              String noun = words[index].noun == null ? '' : words[index].noun!;
+              String noun =
+                  words[index].noun == null ? 'Loading...' : words[index].noun!;
+              String noun_vi = words[index].noun_vi == null
+                  ? 'Loading...'
+                  : words[index].noun_vi!;
               String firstletter = noun.substring(0, 1);
               String remainingLetters = noun.substring(1, noun.length);
-              String defaultQuote =
-                  'Think of all the beauty still left around you and be happy.';
+              String defaultQuote = 'Loading...';
               String quote = words[index].quote == null
                   ? defaultQuote
                   : words[index].quote!;
@@ -224,6 +247,15 @@ class _HomePageState extends State<HomePage> {
                                     )
                                   ])),
                           Container(
+                            margin: const EdgeInsets.only(left: 15, top: 2),
+                            child: Text(
+                              '($noun_vi)',
+                              style: AppStyles.h4.copyWith(
+                                  color: AppColor.textColor, fontSize: 22),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Container(
                             margin: const EdgeInsets.all(15),
                             child: Text(
                               '"$quote"',
@@ -252,23 +284,22 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ),
-        // _currIndex >= 5
-        //     ? buildShowmore()
-        //     :
-        Padding(
-          padding: const EdgeInsets.all(25),
-          child: Container(
-            height: 12,
-            child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return buildIndicator(
-                      index == _currIndex ? true : false, size);
-                }),
-          ),
-        ),
+        _currIndex >= 5
+            ? buildShowmore()
+            : Padding(
+                padding: const EdgeInsets.all(25),
+                child: Container(
+                  height: 12,
+                  child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return buildIndicator(
+                            index == _currIndex ? true : false, size);
+                      }),
+                ),
+              ),
       ]),
       floatingActionButton: Container(
         height: size.height * 1 / 10,
@@ -302,10 +333,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Widget buildShowmore() {
-  //   return Container(
-  //     color: Colors.pink,
-  //     child: Text('Show more'),
-  //   );
-  // }
+  Widget buildShowmore() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.only(left: 30, top: 17),
+      child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 142, 197, 241)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ))),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AllWord(
+                            words: this.words,
+                          )));
+            },
+            child: Text(
+              'Show more',
+              style: AppStyles.h5.copyWith(
+                color: AppColor.textColor,
+              ),
+            ),
+          )),
+    );
+  }
 }
