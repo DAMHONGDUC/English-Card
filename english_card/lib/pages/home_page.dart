@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:english_card/pages/all_word_page.dart';
+import 'package:english_card/pages/all_words_page.dart';
+import 'package:english_card/pages/favorites_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,15 +54,6 @@ class _HomePageState extends State<HomePage> {
     return newList;
   }
 
-  void toVietNamese(String word) {
-    // translator.translate(word, from: 'en', to: 'vn').then((result) {
-    //   setState(() {
-    //     words_vi.add(result.toString());
-    //     print(result);
-    //   });
-    // });
-  }
-
   void getEnglishToday() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -70,7 +62,6 @@ class _HomePageState extends State<HomePage> {
     List<int> rans = fixedListRandom(len: len, max: nouns.length);
     rans.forEach((index) {
       newList.add(nouns[index]);
-      toVietNamese(nouns[index]);
     });
     final List uniqueList = Set.from(newList).toList();
     setState(() {
@@ -138,7 +129,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 AppButton(
                   label: 'Favorites',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FavoritesPage(
+                                  words: this.words,
+                                )));
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
@@ -196,91 +194,109 @@ class _HomePageState extends State<HomePage> {
               int stt = index + 1;
 
               return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  child: Text(
-                                    '$stt',
-                                    style: AppStyles.h5.copyWith(
-                                        color: AppColor.textColor,
-                                        fontSize: 17),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                child: Material(
+                  color: AppColor.primaryColor,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  elevation: 2,
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    splashColor: Color.fromARGB(255, 228, 54, 112),
+                    onTap: () {
+                      setState(() {
+                        words[index].isFavorite =
+                            words[index].isFavorite ? false : true;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                                child: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    child: Text(
+                                      '$stt',
+                                      style: AppStyles.h5.copyWith(
+                                          color: AppColor.textColor,
+                                          fontSize: 17),
+                                    ),
                                   ),
                                 ),
+                                Expanded(
+                                  child: Container(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(Icons.favorite)),
+                                  // child: Image.asset(
+                                  //   Assets.heart,
+                                  //   color: words[index].isFavorite
+                                  //       ? Colors.red
+                                  //       : Colors.white,
+                                  // )),
+                                ),
+                              ],
+                            )),
+                            RichText(
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                text: TextSpan(
+                                    text: firstletter,
+                                    style: AppStyles.h1.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          BoxShadow(
+                                            color: Colors.black38,
+                                            offset: Offset(3, 6),
+                                            blurRadius: 6,
+                                          )
+                                        ]),
+                                    children: [
+                                      TextSpan(
+                                        text: remainingLetters,
+                                        style: AppStyles.h3.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 55),
+                                      )
+                                    ])),
+                            Container(
+                              margin: const EdgeInsets.only(left: 15, top: 2),
+                              child: Text(
+                                '($noun_vi)',
+                                style: AppStyles.h4.copyWith(
+                                    color: AppColor.textColor, fontSize: 22),
+                                textAlign: TextAlign.center,
                               ),
-                              Expanded(
-                                child: Container(
-                                    alignment: Alignment.topRight,
-                                    child: Image.asset(Assets.heart)),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(15),
+                              child: Text(
+                                '"$quote"',
+                                maxLines: 6,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppStyles.h4.copyWith(letterSpacing: 1),
                               ),
-                            ],
-                          )),
-                          RichText(
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                  text: firstletter,
-                                  style: AppStyles.h1.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        BoxShadow(
-                                          color: Colors.black38,
-                                          offset: Offset(3, 6),
-                                          blurRadius: 6,
-                                        )
-                                      ]),
-                                  children: [
-                                    TextSpan(
-                                      text: remainingLetters,
-                                      style: AppStyles.h3.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 55),
-                                    )
-                                  ])),
-                          Container(
-                            margin: const EdgeInsets.only(left: 15, top: 2),
-                            child: Text(
-                              '($noun_vi)',
-                              style: AppStyles.h4.copyWith(
-                                  color: AppColor.textColor, fontSize: 22),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(15),
-                            child: Text(
-                              '"$quote"',
-                              maxLines: 6,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppStyles.h4.copyWith(letterSpacing: 1),
+                            Expanded(
+                              child: Container(
+                                  margin: const EdgeInsets.only(
+                                      right: 10, bottom: 10),
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    '― $quoteAuthor',
+                                    style: AppStyles.h5
+                                        .copyWith(color: AppColor.textColor),
+                                  )),
                             ),
-                          ),
-                          Expanded(
-                            child: Container(
-                                margin: const EdgeInsets.only(
-                                    right: 10, bottom: 10),
-                                alignment: Alignment.bottomRight,
-                                child: Text(
-                                  '― $quoteAuthor',
-                                  style: AppStyles.h5
-                                      .copyWith(color: AppColor.textColor),
-                                )),
-                          ),
-                        ]),
+                          ]),
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: AppColor.primaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ));
+                ),
+              );
             },
           ),
         ),
@@ -352,7 +368,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => AllWord(
+                      builder: (context) => AllWordsPage(
                             words: this.words,
                           )));
             },
