@@ -37,6 +37,7 @@ dependencies:
   english_words: ^4.0.0
   auto_size_text: ^3.0.0
   translator: ^0.1.7
+  like_button: ^2.0.4
 
 dev_dependencies:
   flutter_test:
