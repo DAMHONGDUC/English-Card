@@ -1,32 +1,32 @@
 # Technologies
 - Flutter
 # Screenshots
-<table>
-  <tr>
-    <td valign="top"><img src="Images/2.jpg"/></td>
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <td valign="top"><img src="Images/3.jpg"/></td>
-  </tr>
-</table>
+<kbd>
+  <img src="Images/2.jpg">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="Images/3.jpg">
+</kbd>
+<br/>
+<br/>
 
-<table>
-  <tr>
-    <td valign="top"><img src="Images/4.jpg"/></td>
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <td valign="top"><img src="Images/5.jpg"/></td>
-  </tr>
-</table>
+<kbd>
+  <img src="Images/4.jpg">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="Images/5.jpg">
+</kbd>
+<br/>
+<br/>
 
-<table>
-  <tr>
-    <td valign="top"><img src="Images/6.jpg"/></td>
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <td valign="top"><img src="Images/7.jpg"/></td>
-  </tr>
-</table>
+<kbd>
+  <img src="Images/6.jpg">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="Images/7.jpg">
+</kbd>
+<br/>
+<br/>
 
-<table>
-  <tr>
-    <td valign="top"><img src="Images/8.jpg"/></td>
-  </tr>
-</table>
+<kbd>
+  <img src="Images/8.jpg">
+</kbd>
+<br/>
+<br/>
