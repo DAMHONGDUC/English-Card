@@ -9,7 +9,7 @@
   </tr>
 </table>
 
-<br/>
+
 <table>
   <tr>
     <td valign="top"><img src="Images/4.jpg"/></td>
@@ -18,7 +18,7 @@
   </tr>
 </table>
 
-<br/>
+
 <table>
   <tr>
     <td valign="top"><img src="Images/6.jpg"/></td>
@@ -27,7 +27,7 @@
   </tr>
 </table>
 
-<br/>
+
 <table>
   <tr>
     <td valign="top"><img src="Images/8.jpg"/></td>
